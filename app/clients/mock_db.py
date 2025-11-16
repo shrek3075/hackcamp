@@ -15,7 +15,6 @@ class MockDBClient:
         self.busy_blocks = []
         self.plans = []
         self.preferences = {}
-        self.semester_configs = {}
 
     # ===== TASKS =====
 
@@ -123,35 +122,6 @@ class MockDBClient:
     def get_preferences(self, user_id: str) -> Optional[Dict]:
         """Get user preferences"""
         return self.preferences.get(user_id)
-
-    # ===== SEMESTER CONFIGURATION =====
-
-    def insert_semester_config(self, config: Dict[str, Any]) -> Dict:
-        """Insert semester configuration"""
-        config_copy = config.copy()
-        if 'id' not in config_copy or not config_copy['id']:
-            config_copy['id'] = str(uuid.uuid4())
-        user_id = config_copy['user_id']
-        self.semester_configs[user_id] = config_copy
-        return config_copy
-
-    def get_semester_config(self, user_id: str) -> Optional[Dict]:
-        """Get semester configuration for a user"""
-        return self.semester_configs.get(user_id)
-
-    def update_semester_config(self, user_id: str, updates: Dict[str, Any]) -> Optional[Dict]:
-        """Update semester configuration"""
-        if user_id in self.semester_configs:
-            self.semester_configs[user_id].update(updates)
-            return self.semester_configs[user_id]
-        return None
-
-    def delete_semester_config(self, user_id: str) -> bool:
-        """Delete semester configuration"""
-        if user_id in self.semester_configs:
-            del self.semester_configs[user_id]
-            return True
-        return False
 
 
 # Global instance

@@ -25,7 +25,7 @@ if not os.getenv("OPENAI_API_KEY"):
 else:
     print("SUCCESS: OpenAI API Key loaded successfully")
 
-from app.routes import syllabus, calendar, timeline, daily, practice, progress, tutor
+from app.routes import syllabus, calendar, timeline, daily, practice, progress
 from app.models import HealthResponse
 
 # Create FastAPI app
@@ -51,7 +51,6 @@ app.include_router(timeline.router)
 app.include_router(daily.router)
 app.include_router(practice.router)
 app.include_router(progress.router)
-app.include_router(tutor.router)
 
 
 @app.get("/", tags=["root"])
