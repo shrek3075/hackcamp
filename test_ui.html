@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPlanner - Test UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .response {
+            background: #f5f5f5;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 SmartPlanner Test UI</h1>
+            <p>AI-Powered Study Planning Backend</p>
+            <p style="font-size: 14px; margin-top: 10px;">Server: <span id="serverStatus">Checking...</span></p>
+        </div>
+
+        <!-- Test 1: Upload Syllabus -->
+        <div class="card">
+            <h2>1. Upload Syllabus (Text)</h2>
+            <div class="form-group">
+                <label>User ID</label>
+                <input type="text" id="userId1" value="test_user_123" placeholder="Enter user ID">
+            </div>
+            <div class="form-group">
+                <label>Syllabus Text</label>
+                <textarea id="syllabusText" placeholder="Enter syllabus content...">Assignment 1 (15%): Python basics - Due February 15, 2024
+Midterm Exam (30%): Covers chapters 1-5 - March 10, 2024
+Final Project (25%): Build a web app - April 20, 2024
+Quiz 1 (5%): Loops and functions - February 8, 2024</textarea>
+            </div>
+            <button onclick="uploadSyllabus()">Extract Tasks</button>
+            <div id="syllabusResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 2: Generate Timeline -->
+        <div class="card">
+            <h2>2. Generate Study Timeline</h2>
+            <div class="form-group">
+                <label>User ID</label>
+                <input type="text" id="userId2" value="test_user_123">
+            </div>
+            <button onclick="generateTimeline()">Generate Timeline</button>
+            <div id="timelineResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 3: Get Daily Plan -->
+        <div class="card">
+            <h2>3. Get Today's Study Plan</h2>
+            <div class="form-group">
+                <label>User ID</label>
+                <input type="text" id="userId3" value="test_user_123">
+            </div>
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="userName" value="Alex">
+            </div>
+            <button onclick="getDailyPlan()">Get Daily Plan</button>
+            <div id="dailyResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 4: Generate Practice Questions -->
+        <div class="card">
+            <h2>4. Generate Practice Questions</h2>
+            <div class="form-group">
+                <label>Topic</label>
+                <input type="text" id="practiceTopic" value="Python loops and functions" placeholder="Enter topic">
+            </div>
+            <div class="form-group">
+                <label>Difficulty</label>
+                <select id="practiceDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Number of Questions</label>
+                <input type="text" id="practiceNum" value="3">
+            </div>
+            <button onclick="generatePractice()">Generate Questions</button>
+            <div id="practiceResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 5: AI Explanation -->
+        <div class="card">
+            <h2>5. Get AI Explanation</h2>
+            <div class="form-group">
+                <label>Concept to Explain</label>
+                <input type="text" id="explainConcept" value="for loops in Python" placeholder="Enter concept">
+            </div>
+            <button onclick="getExplanation()">Get Explanation</button>
+            <div id="explainResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 6: Progress Stats -->
+        <div class="card">
+            <h2>6. Progress & Stats</h2>
+            <div class="form-group">
+                <label>User ID</label>
+                <input type="text" id="userId4" value="test_user_123">
+            </div>
+            <button onclick="getProgress()">Get Progress Stats</button>
+            <div id="progressResponse" class="response" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        // Check server status on load
+        async function checkServer() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                document.getElementById('serverStatus').textContent = '✅ Online';
+                document.getElementById('serverStatus').style.color = '#4CAF50';
+            } catch (error) {
+                document.getElementById('serverStatus').textContent = '❌ Offline';
+                document.getElementById('serverStatus').style.color = '#ff4444';
+            }
+        }
+
+        checkServer();
+
+        async function uploadSyllabus() {
+            const userId = document.getElementById('userId1').value;
+            const syllabusText = document.getElementById('syllabusText').value;
+            const responseDiv = document.getElementById('syllabusResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Extracting tasks with AI...';
+
+            try {
+                const formData = new FormData();
+                formData.append('user_id', userId);
+                formData.append('syllabus_text', syllabusText);
+
+                const response = await fetch(`${API_URL}/syllabus/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Success! Extracted ${data.tasks_extracted} tasks</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function generateTimeline() {
+            const userId = document.getElementById('userId2').value;
+            const responseDiv = document.getElementById('timelineResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Generating study timeline...';
+
+            try {
+                const response = await fetch(`${API_URL}/timeline/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        preferences: {
+                            max_hours_per_day: 5.0,
+                            preferred_start_time: "09:00",
+                            preferred_end_time: "21:00"
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Timeline Generated! ${data.blocks?.length || 0} study blocks</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function getDailyPlan() {
+            const userId = document.getElementById('userId3').value;
+            const userName = document.getElementById('userName').value;
+            const responseDiv = document.getElementById('dailyResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Getting today\'s plan...';
+
+            try {
+                const response = await fetch(`${API_URL}/daily/${userId}?user_name=${userName}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Daily Plan Retrieved!</div>
+                        <h3 style="margin: 16px 0;">Today's Schedule</h3>
+                        <p><strong>Motivation:</strong> ${data.motivation || 'No message'}</p>
+                        <p><strong>Total Hours:</strong> ${data.total_hours || 0}h</p>
+                        <p><strong>Streak:</strong> ${data.streak || 0} days 🔥</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function generatePractice() {
+            const topic = document.getElementById('practiceTopic').value;
+            const difficulty = document.getElementById('practiceDifficulty').value;
+            const num = document.getElementById('practiceNum').value;
+            const responseDiv = document.getElementById('practiceResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Generating practice questions with AI...';
+
+            try {
+                const response = await fetch(`${API_URL}/practice/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic: topic,
+                        difficulty: difficulty,
+                        num_questions: parseInt(num),
+                        question_type: "mixed"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Generated ${data.questions?.length || 0} questions!</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function getExplanation() {
+            const concept = document.getElementById('explainConcept').value;
+            const responseDiv = document.getElementById('explainResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Getting AI explanation...';
+
+            try {
+                const response = await fetch(`${API_URL}/practice/explain`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        concept: concept,
+                        detail_level: "medium"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Explanation Retrieved!</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function getProgress() {
+            const userId = document.getElementById('userId4').value;
+            const responseDiv = document.getElementById('progressResponse');
+
+            responseDiv.style.display = 'block';
+            responseDiv.innerHTML = '<div class="loading"></div> Getting progress stats...';
+
+            try {
+                const response = await fetch(`${API_URL}/progress/stats/${userId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">Progress Retrieved!</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="status error">Error</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">Error</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

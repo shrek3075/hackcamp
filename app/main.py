@@ -9,10 +9,21 @@ Duolingo-style study app with:
 - Practice questions & tutoring
 - Progress tracking & gamification
 """
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from dateutil import tz
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Verify API key is loaded
+if not os.getenv("OPENAI_API_KEY"):
+    print("WARNING: OPENAI_API_KEY not found in environment!")
+else:
+    print("SUCCESS: OpenAI API Key loaded successfully")
 
 from app.routes import syllabus, calendar, timeline, daily, practice, progress
 from app.models import HealthResponse

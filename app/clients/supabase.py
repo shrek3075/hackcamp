@@ -169,9 +169,15 @@ class SupabaseClient:
 _supabase_client: Optional[SupabaseClient] = None
 
 
-def get_supabase_client() -> SupabaseClient:
-    """Get or create Supabase client singleton"""
+def get_supabase_client():
+    """Get or create Supabase client singleton (or mock for testing)"""
     global _supabase_client
+
+    # Check if we should use mock database for testing
+    if os.getenv("USE_MOCK_DB") == "true" or not os.getenv("SUPABASE_URL"):
+        from app.clients.mock_db import get_mock_db_client
+        return get_mock_db_client()
+
     if _supabase_client is None:
         _supabase_client = SupabaseClient()
     return _supabase_client
