@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Connection Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .success {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .step h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge.pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .badge.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .badge.error {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Frontend Connection Test</h1>
+        <p class="subtitle">Test your backend connection before integrating with Lovable</p>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <h3>Step 1: Check Backend <span id="badge1" class="badge pending">PENDING</span></h3>
+            <button onclick="testBackend()">Test Connection</button>
+            <div id="result1"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <h3>Step 2: Seed Demo Data <span id="badge2" class="badge pending">PENDING</span></h3>
+            <button onclick="seedDemo()">Seed Demo Data</button>
+            <div id="result2"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <h3>Step 3: Get Dashboard <span id="badge3" class="badge pending">PENDING</span></h3>
+            <button onclick="getDashboard()">Load Dashboard</button>
+            <div id="result3"></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <h3>Step 4: Get Today's Plan <span id="badge4" class="badge pending">PENDING</span></h3>
+            <button onclick="getTodaysPlan()">Load Today's Plan</button>
+            <div id="result4"></div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <h3>Step 5: Generate Practice Questions <span id="badge5" class="badge pending">PENDING</span></h3>
+            <button onclick="generatePractice()">Generate Questions</button>
+            <div id="result5"></div>
+        </div>
+
+        <!-- All at once -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="runAllTests()" style="font-size: 18px; padding: 15px 30px;">
+                🚀 Run All Tests
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        const USER_ID = 'demo_user';
+
+        function showResult(stepNum, data, isError = false) {
+            const resultDiv = document.getElementById(`result${stepNum}`);
+            const badge = document.getElementById(`badge${stepNum}`);
+
+            resultDiv.className = `result ${isError ? 'error' : 'success'}`;
+            resultDiv.textContent = JSON.stringify(data, null, 2);
+
+            badge.className = `badge ${isError ? 'error' : 'success'}`;
+            badge.textContent = isError ? 'ERROR' : 'SUCCESS';
+        }
+
+        async function testBackend() {
+            try {
+                const response = await fetch(`${API_BASE}/`);
+                const data = await response.json();
+                showResult(1, data);
+            } catch (error) {
+                showResult(1, { error: error.message }, true);
+            }
+        }
+
+        async function seedDemo() {
+            try {
+                const response = await fetch(`${API_BASE}/demo/seed`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: USER_ID,
+                        exam_name: 'World War II Midterm'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Seed failed');
+                }
+
+                const data = await response.json();
+                showResult(2, data);
+            } catch (error) {
+                showResult(2, { error: error.message }, true);
+            }
+        }
+
+        async function getDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/demo/dashboard/${USER_ID}`);
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Dashboard fetch failed');
+                }
+
+                const data = await response.json();
+                showResult(3, {
+                    exam: data.exam,
+                    progress: data.progress,
+                    motivational_message: data.motivational_message,
+                    upcoming_deadlines: data.upcoming_deadlines?.slice(0, 2)
+                });
+            } catch (error) {
+                showResult(3, { error: error.message }, true);
+            }
+        }
+
+        async function getTodaysPlan() {
+            try {
+                const response = await fetch(`${API_BASE}/daily/${USER_ID}?user_name=Student`);
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to get today\'s plan');
+                }
+
+                const data = await response.json();
+                showResult(4, {
+                    date: data.date,
+                    motivational_message: data.motivational_message,
+                    streak: data.streak,
+                    todays_tasks: data.todays_tasks?.slice(0, 3)
+                });
+            } catch (error) {
+                showResult(4, { error: error.message }, true);
+            }
+        }
+
+        async function generatePractice() {
+            try {
+                const response = await fetch(`${API_BASE}/practice/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic: 'Causes of World War II',
+                        difficulty: 'medium',
+                        num_questions: 2,
+                        question_type: 'multiple_choice'
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Practice generation failed');
+                }
+
+                const data = await response.json();
+                showResult(5, {
+                    num_questions: data.questions?.length,
+                    first_question: data.questions?.[0]
+                });
+            } catch (error) {
+                showResult(5, { error: error.message }, true);
+            }
+        }
+
+        async function runAllTests() {
+            await testBackend();
+            await sleep(500);
+            await seedDemo();
+            await sleep(500);
+            await getDashboard();
+            await sleep(500);
+            await getTodaysPlan();
+            await sleep(500);
+            await generatePractice();
+
+            alert('All tests complete! Check the results above.');
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

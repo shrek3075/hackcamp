@@ -45,3 +45,31 @@ htmlcov/
 
 # Logs
 *.log
+
+# Node.js / Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+dist/
+.cache/
+.parcel-cache/
+.vite/
+.next/
+out/
+.nuxt/
+.output/
+
+# Build outputs
+*.tsbuildinfo
+.eslintcache
+
+# Local development
+.DS_Store
+*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

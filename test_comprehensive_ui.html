@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPlanner - Comprehensive Test UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .success {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .file-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .file-item {
+            padding: 5px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 SmartPlanner - Comprehensive Test</h1>
+        <p class="subtitle">Multi-file upload, comprehensive content extraction, knowledge assessment & semester planning</p>
+
+        <!-- 1. Exam Configuration -->
+        <div class="section">
+            <h2>1️⃣ Exam Configuration</h2>
+            <p style="color: #666; margin-bottom: 15px;">Configure your exam/test settings and study preferences</p>
+
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" id="config-user-id" value="demo_user" />
+            </div>
+
+            <div class="form-group">
+                <label>Exam Name:</label>
+                <input type="text" id="exam-name" value="WWII Midterm" placeholder="e.g., Physics Final, History Quiz" />
+            </div>
+
+            <div class="form-group">
+                <label>Exam Date (when is the test?):</label>
+                <input type="date" id="exam-date" value="2025-11-25" />
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Grade Level:</label>
+                    <select id="grade-level" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                        <option value="middle_school">Middle School</option>
+                        <option value="high_school" selected>High School</option>
+                        <option value="college">College</option>
+                        <option value="graduate">Graduate</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Exam Weight (% of grade):</label>
+                    <input type="text" id="exam-weight" value="25" placeholder="e.g., 25 for 25%" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;" />
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Study Depth:</label>
+                    <select id="exam-study-depth" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                        <option value="basic">Basic (quick overview)</option>
+                        <option value="standard" selected>Standard (balanced)</option>
+                        <option value="comprehensive">Comprehensive (deep dive)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Hours per Day Available:</label>
+                    <input type="text" id="hours-per-day" value="2.0" placeholder="e.g., 2.5" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;" />
+                </div>
+            </div>
+
+            <button onclick="setExamConfig()">Save Exam Settings</button>
+            <button onclick="getExamConfig()">Get Current Settings</button>
+
+            <div id="config-response" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- 2. Comprehensive Multi-File Upload -->
+        <div class="section">
+            <h2>2️⃣ Comprehensive Multi-File Upload</h2>
+            <p style="color: #666; margin-bottom: 15px;">Upload multiple study materials (PDFs, images, PowerPoints) for complete analysis</p>
+
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" id="upload-user-id" value="demo_user" />
+            </div>
+
+            <div class="form-group">
+                <label>Select Multiple Files (PDFs, images, .pptx):</label>
+                <input type="file" id="file-upload" multiple accept=".pdf,.jpg,.jpeg,.png,.pptx,.txt" />
+                <div id="file-list" class="file-list" style="display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Or Paste Text (Syllabus content):</label>
+                <textarea id="syllabus-text" placeholder="Assignment 1 (15%): Python basics - Due December 1, 2025&#10;Midterm Exam (30%): Comprehensive - December 10, 2025"></textarea>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Grade Level:</label>
+                    <select id="upload-grade-level" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                        <option value="middle_school">Middle School</option>
+                        <option value="high_school" selected>High School</option>
+                        <option value="college">College</option>
+                        <option value="graduate">Graduate</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Exam Date (when is the test?):</label>
+                    <input type="date" id="upload-exam-date" value="2025-11-25" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;" />
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Exam Weight (% of grade):</label>
+                    <input type="text" id="upload-exam-weight" value="25" placeholder="e.g., 25 for 25%" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;" />
+                </div>
+
+                <div class="form-group">
+                    <label>Hours Per Day You Can Study:</label>
+                    <input type="text" id="upload-hours-per-day" value="2" placeholder="e.g., 2 or 3.5" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Study Depth Level:</label>
+                <select id="upload-study-depth" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                    <option value="basic">Basic - Quick overview of main concepts</option>
+                    <option value="standard" selected>Standard - Balanced depth</option>
+                    <option value="comprehensive">Comprehensive - Deep dive into all details</option>
+                </select>
+            </div>
+
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                ⚠️ For now, use EITHER files OR text, not both together
+            </p>
+
+            <button onclick="uploadComprehensive()">Upload & Extract Everything</button>
+            <button onclick="clearUpload()">Clear</button>
+
+            <div id="upload-response" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- 3. View Extracted Content -->
+        <div class="section">
+            <h2>3️⃣ Extracted Study Materials</h2>
+            <p style="color: #666; margin-bottom: 15px;">View topics, key terms, learning objectives & estimated hours</p>
+
+            <div id="study-materials" class="response">
+                Upload files first to see extracted content...
+            </div>
+        </div>
+
+        <!-- 4. Study Schedule -->
+        <div class="section">
+            <h2>4️⃣ Study Schedule (From Now to Exam)</h2>
+            <p style="color: #666; margin-bottom: 15px;">Day-by-day study plan with recommended hours and topics</p>
+
+            <div id="study-schedule" class="response">
+                Upload files with exam date to generate schedule...
+            </div>
+        </div>
+
+        <!-- 5. Knowledge Assessment Quiz -->
+        <div class="section">
+            <h2>5️⃣ Knowledge Assessment Quiz</h2>
+            <p style="color: #666; margin-bottom: 15px;">Diagnostic quiz generated from your study materials</p>
+
+            <div id="quiz-content" class="response">
+                Upload files to generate quiz...
+            </div>
+        </div>
+
+        <!-- 6. AI Study Tutor Chat -->
+        <div class="section">
+            <h2>6️⃣ AI Study Tutor 🧠</h2>
+            <p style="color: #666; margin-bottom: 15px;">Ask questions about your study materials. The AI knows everything from your uploaded files!</p>
+
+            <div id="chat-container" style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px; height: 400px; overflow-y: auto; background: #f9f9f9;">
+                <div id="chat-messages">
+                    <div style="padding: 10px; background: #e8f0fe; border-radius: 8px; margin-bottom: 10px;">
+                        <strong>🧠 Tutor:</strong> Hi! Upload your study materials first, then ask me anything about the content. I can explain concepts, answer questions, and help you learn!
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ask a Question:</label>
+                <textarea id="tutor-question" placeholder="e.g., 'Explain the causes of World War 1' or 'What are the key terms I should know?'" style="min-height: 60px;"></textarea>
+            </div>
+
+            <button onclick="askTutor()">Ask Tutor</button>
+            <button onclick="clearChat()">Clear Chat</button>
+        </div>
+
+        <!-- 7. Generate Timeline -->
+        <div class="section">
+            <h2>7️⃣ Generate Study Timeline</h2>
+            <p style="color: #666; margin-bottom: 15px;">AI-powered schedule respecting semester dates and busy blocks</p>
+
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" id="timeline-user-id" value="demo_user" />
+            </div>
+
+            <button onclick="generateTimeline()">Generate Timeline</button>
+
+            <div id="timeline-response" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- 7. Test All Features -->
+        <div class="section">
+            <h2>7️⃣ Complete Flow Test</h2>
+            <p style="color: #666; margin-bottom: 15px;">Test the entire workflow sequentially</p>
+
+            <button onclick="testCompleteFlow()">🚀 Run Complete Test</button>
+
+            <div id="complete-test-response" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // Update file list display
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const fileList = document.getElementById('file-list');
+            const files = e.target.files;
+
+            if (files.length > 0) {
+                let html = '<strong>Selected files:</strong><br>';
+                for (let i = 0; i < files.length; i++) {
+                    html += `<div class="file-item">${i + 1}. ${files[i].name} (${(files[i].size / 1024).toFixed(1)} KB)</div>`;
+                }
+                fileList.innerHTML = html;
+                fileList.style.display = 'block';
+            } else {
+                fileList.style.display = 'none';
+            }
+        });
+
+        async function setExamConfig() {
+            const responseDiv = document.getElementById('config-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Setting exam configuration...';
+
+            try {
+                const examWeight = document.getElementById('exam-weight').value;
+                const data = {
+                    user_id: document.getElementById('config-user-id').value,
+                    exam_name: document.getElementById('exam-name').value,
+                    exam_date: document.getElementById('exam-date').value,
+                    grade_level: document.getElementById('grade-level').value,
+                    exam_weight: examWeight ? parseFloat(examWeight) : null,
+                    study_depth: document.getElementById('exam-study-depth').value,
+                    hours_per_day: parseFloat(document.getElementById('hours-per-day').value)
+                };
+
+                const response = await fetch(`${API_BASE}/config/exam`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                responseDiv.className = 'response success';
+                responseDiv.textContent = '✅ Exam configured!\n\n' + JSON.stringify(result, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        async function getExamConfig() {
+            const responseDiv = document.getElementById('config-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Fetching exam configuration...';
+
+            try {
+                const userId = document.getElementById('config-user-id').value;
+                const response = await fetch(`${API_BASE}/config/exam/${userId}`);
+
+                if (!response.ok) {
+                    throw new Error('Exam configuration not found');
+                }
+
+                const result = await response.json();
+                responseDiv.className = 'response success';
+                responseDiv.textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ ' + error.message;
+            }
+        }
+
+        async function uploadComprehensive() {
+            const responseDiv = document.getElementById('upload-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Processing files with AI...';
+
+            const formData = new FormData();
+            formData.append('user_id', document.getElementById('upload-user-id').value);
+            formData.append('study_depth', document.getElementById('upload-study-depth').value);
+            formData.append('grade_level', document.getElementById('upload-grade-level').value);
+            formData.append('generate_quiz', 'true');  // Generate quiz
+
+            const examWeight = document.getElementById('upload-exam-weight').value;
+            if (examWeight) {
+                formData.append('exam_weight', examWeight);
+            }
+
+            const examDate = document.getElementById('upload-exam-date').value;
+            if (examDate) {
+                formData.append('exam_date', examDate);
+            }
+
+            const hoursPerDay = document.getElementById('upload-hours-per-day').value;
+            if (hoursPerDay) {
+                formData.append('hours_per_day', hoursPerDay);
+            }
+
+            // Check if using files or text
+            const files = document.getElementById('file-upload').files;
+            const text = document.getElementById('syllabus-text').value;
+
+            if (files && files.length > 0) {
+                // Clear text if files are selected
+                if (text) {
+                    alert('Using files only. Text will be ignored.');
+                }
+                // Send files as individual form fields with same name
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('files', files[i]);
+                }
+            } else if (text) {
+                formData.append('syllabus_text', text);
+            } else {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Please select files OR enter text';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/syllabus/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = '✅ Upload successful!\n\n' + JSON.stringify(result, null, 2);
+
+                    // Display study materials
+                    displayStudyMaterials(result.study_materials || []);
+
+                    // Display study schedule
+                    displayStudySchedule(result.study_schedule);
+
+                    // Display quiz
+                    displayQuiz(result.assessment_quiz);
+                } else {
+                    throw new Error(result.detail || 'Upload failed');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        function displayStudyMaterials(materials) {
+            const div = document.getElementById('study-materials');
+
+            if (materials.length === 0) {
+                div.textContent = 'No study materials extracted.';
+                return;
+            }
+
+            let html = '';
+            materials.forEach((material, idx) => {
+                html += `<strong>📚 Material ${idx + 1}: ${material.source_file}</strong>\n`;
+                html += `Complexity: ${material.complexity_level}\n`;
+                html += `Total Hours: ${material.total_estimated_hours}h\n\n`;
+
+                material.topics.forEach((topic, tidx) => {
+                    html += `  Topic ${tidx + 1}: ${topic.name} (${topic.complexity}, ${topic.estimated_hours}h)\n`;
+
+                    if (topic.subtopics && topic.subtopics.length > 0) {
+                        html += `    Subtopics: ${topic.subtopics.join(', ')}\n`;
+                    }
+
+                    if (topic.learning_objectives && topic.learning_objectives.length > 0) {
+                        html += `    Objectives:\n`;
+                        topic.learning_objectives.forEach(obj => {
+                            html += `      - ${obj}\n`;
+                        });
+                    }
+
+                    if (topic.key_terms && topic.key_terms.length > 0) {
+                        html += `    Key Terms:\n`;
+                        topic.key_terms.forEach(term => {
+                            html += `      - ${term.term}: ${term.definition}\n`;
+                        });
+                    }
+                    html += '\n';
+                });
+            });
+
+            div.textContent = html;
+        }
+
+        function displayStudySchedule(schedule) {
+            const div = document.getElementById('study-schedule');
+
+            if (!schedule || !schedule.daily_schedule) {
+                div.textContent = 'No study schedule generated. Provide exam date to create timeline.';
+                return;
+            }
+
+            const metadata = schedule.metadata;
+            const daily = schedule.daily_schedule;
+
+            // Create HTML timeline UI
+            let html = '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">';
+            html += `<h3 style="margin: 0 0 10px 0; color: #667eea;">📅 Study Schedule Overview</h3>`;
+            html += `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 14px;">`;
+            html += `<div><strong>Exam Date:</strong> ${metadata.exam_date}</div>`;
+            html += `<div><strong>Days Until Exam:</strong> ${metadata.days_until_exam}</div>`;
+            html += `<div><strong>Total Hours:</strong> ${metadata.total_hours_needed}h</div>`;
+            html += `<div><strong>Hours/Day:</strong> ${metadata.avg_hours_per_day}h</div>`;
+            html += `</div></div>`;
+
+            // Timeline
+            html += '<div style="position: relative;">';
+
+            daily.forEach((day, index) => {
+                const isReview = day.is_review_day;
+                const bgColor = isReview ? '#fff3cd' : (index % 2 === 0 ? '#ffffff' : '#f8f9fa');
+                const borderColor = isReview ? '#ffc107' : '#667eea';
+
+                html += `<div style="background: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 15px; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">`;
+
+                // Day header
+                html += `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">`;
+                html += `<div style="font-weight: bold; font-size: 16px; color: #333;">`;
+                html += `${isReview ? '📝' : '📚'} Day ${day.day_number} - ${day.day_name}, ${day.date}`;
+                if (isReview) html += ` <span style="background: #ffc107; color: #000; padding: 2px 8px; border-radius: 3px; font-size: 12px; margin-left: 10px;">REVIEW</span>`;
+                html += `</div>`;
+                html += `<div style="color: #666; font-size: 14px;">${day.session_start} - ${day.session_end} (${day.total_hours}h)</div>`;
+                html += `</div>`;
+
+                // Topics for this day
+                day.topics.forEach((topic, topicIdx) => {
+                    const partial = topic.is_partial ? ' <span style="color: #ff9800; font-size: 12px;">(continued)</span>' : '';
+                    html += `<div style="margin-left: 20px; padding: 8px; background: white; margin-bottom: 8px; border-radius: 3px; border-left: 3px solid #667eea;">`;
+                    html += `<div style="font-weight: 500; color: #333;">${topicIdx + 1}. ${topic.topic_name}${partial}</div>`;
+                    html += `<div style="font-size: 13px; color: #666; margin-top: 4px;">`;
+                    html += `⏱️ ${topic.hours}h | 📊 ${topic.complexity}`;
+                    if (topic.subtopics && topic.subtopics.length > 0) {
+                        html += ` | 📌 ${topic.subtopics.slice(0, 2).join(', ')}`;
+                    }
+                    html += `</div>`;
+                    html += `</div>`;
+                });
+
+                html += `</div>`;
+            });
+
+            html += '</div>';
+
+            div.innerHTML = html;
+        }
+
+        function displayQuiz(quiz) {
+            const div = document.getElementById('quiz-content');
+
+            if (!quiz || !quiz.questions || quiz.questions.length === 0) {
+                div.textContent = 'No quiz generated. Upload study materials first.';
+                return;
+            }
+
+            let html = `📝 Diagnostic Quiz (${quiz.questions.length} questions)\n\n`;
+
+            quiz.questions.forEach((q, idx) => {
+                html += `Q${idx + 1}. [${q.topic}] ${q.question}\n`;
+                Object.entries(q.options).forEach(([key, value]) => {
+                    const marker = key === q.correct_answer ? '✓' : ' ';
+                    html += `  ${marker} ${key}. ${value}\n`;
+                });
+                if (q.explanation) {
+                    html += `  💡 ${q.explanation}\n`;
+                }
+                html += '\n';
+            });
+
+            div.textContent = html;
+        }
+
+        async function generateTimeline() {
+            const responseDiv = document.getElementById('timeline-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = 'Generating AI-powered timeline...';
+
+            try {
+                const response = await fetch(`${API_BASE}/timeline/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: document.getElementById('timeline-user-id').value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    let output = '✅ Timeline generated!\n\n';
+                    output += `Total Hours: ${result.metadata.total_hours}h\n`;
+                    output += `Tasks Scheduled: ${result.metadata.tasks_scheduled}\n\n`;
+                    output += JSON.stringify(result, null, 2);
+                    responseDiv.textContent = output;
+                } else {
+                    throw new Error(result.detail || 'Timeline generation failed');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        function clearUpload() {
+            document.getElementById('file-upload').value = '';
+            document.getElementById('syllabus-text').value = '';
+            document.getElementById('file-list').style.display = 'none';
+            document.getElementById('upload-response').style.display = 'none';
+        }
+
+        async function testCompleteFlow() {
+            const responseDiv = document.getElementById('complete-test-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+
+            let log = '🚀 Starting complete flow test...\n\n';
+            responseDiv.textContent = log;
+
+            try {
+                // Step 1: Set semester
+                log += '1. Setting semester configuration...\n';
+                responseDiv.textContent = log;
+                await setSemesterConfig();
+                log += '   ✅ Semester configured\n\n';
+
+                await sleep(1000);
+
+                // Step 2: Upload content
+                log += '2. Uploading study materials...\n';
+                responseDiv.textContent = log;
+
+                document.getElementById('syllabus-text').value = `Assignment 1 (15%): Python basics - Due November 25, 2025
+Midterm Exam (30%): Comprehensive exam - December 10, 2025
+Final Project (25%): Web application - December 18, 2025`;
+
+                await uploadComprehensive();
+                log += '   ✅ Materials uploaded and analyzed\n\n';
+
+                await sleep(2000);
+
+                // Step 3: Generate timeline
+                log += '3. Generating study timeline...\n';
+                responseDiv.textContent = log;
+                await generateTimeline();
+                log += '   ✅ Timeline generated\n\n';
+
+                log += '🎉 Complete flow test finished successfully!';
+                responseDiv.className = 'response success';
+                responseDiv.textContent = log;
+
+            } catch (error) {
+                log += `\n❌ Error: ${error.message}`;
+                responseDiv.className = 'response error';
+                responseDiv.textContent = log;
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ========== TUTOR CHAT FUNCTIONS ==========
+
+        let conversationHistory = [];
+
+        // Simple markdown to HTML converter
+        function markdownToHtml(text) {
+            if (!text) return '';
+
+            // Convert **bold** to <strong>
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Convert bullet points (• or -) to HTML lists
+            let lines = text.split('\n');
+            let inList = false;
+            let html = '';
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+
+                // Check if line is a bullet point
+                if (line.match(/^[•\-\*]\s+/)) {
+                    if (!inList) {
+                        html += '<ul style="margin: 8px 0; padding-left: 20px;">';
+                        inList = true;
+                    }
+                    let content = line.replace(/^[•\-\*]\s+/, '');
+                    html += `<li style="margin: 4px 0;">${content}</li>`;
+                }
+                // Check if line is a numbered list
+                else if (line.match(/^\d+\.\s+/)) {
+                    if (!inList) {
+                        html += '<ol style="margin: 8px 0; padding-left: 20px;">';
+                        inList = true;
+                    }
+                    let content = line.replace(/^\d+\.\s+/, '');
+                    html += `<li style="margin: 4px 0;">${content}</li>`;
+                }
+                else {
+                    // Close list if we were in one
+                    if (inList) {
+                        html += lines[i-1].match(/^\d+\.\s+/) ? '</ol>' : '</ul>';
+                        inList = false;
+                    }
+
+                    // Empty line = line break
+                    if (line === '') {
+                        html += '<br>';
+                    } else {
+                        html += line + ' ';
+                    }
+                }
+            }
+
+            // Close list if still open
+            if (inList) {
+                html += lines[lines.length-1].match(/^\d+\.\s+/) ? '</ol>' : '</ul>';
+            }
+
+            return html;
+        }
+
+        async function askTutor() {
+            const question = document.getElementById('tutor-question').value.trim();
+            const userId = document.getElementById('upload-user-id').value || 'demo_user';
+
+            if (!question) {
+                alert('Please enter a question!');
+                return;
+            }
+
+            // Add user message to chat
+            addMessage('user', question);
+
+            // Clear input
+            document.getElementById('tutor-question').value = '';
+
+            // Show loading
+            addMessage('tutor', 'Thinking...');
+
+            try {
+                const response = await fetch(`${API_BASE}/tutor/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        message: question,
+                        conversation_history: conversationHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                // Remove loading message
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.removeChild(chatMessages.lastChild);
+
+                // Add tutor response
+                addMessage('tutor', data.message, data.referenced_topics, data.suggested_followups);
+
+                // Update conversation history
+                conversationHistory.push({ role: 'user', content: question });
+                conversationHistory.push({ role: 'assistant', content: data.message });
+
+            } catch (error) {
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.removeChild(chatMessages.lastChild);
+                addMessage('tutor', `Error: ${error.message}. Make sure you've uploaded study materials first!`);
+            }
+        }
+
+        function addMessage(sender, message, referencedTopics = [], suggestedFollowups = []) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+
+            if (sender === 'user') {
+                messageDiv.style.cssText = 'padding: 10px; background: #f0f0f0; border-radius: 8px; margin-bottom: 10px;';
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            } else {
+                messageDiv.style.cssText = 'padding: 10px; background: #e8f0fe; border-radius: 8px; margin-bottom: 10px; line-height: 1.6;';
+                // Convert markdown to HTML for better formatting
+                let formattedMessage = markdownToHtml(message);
+                let html = `<strong>🧠 Tutor:</strong><br><div style="margin-top: 8px;">${formattedMessage}</div>`;
+
+                // Add referenced topics
+                if (referencedTopics && referencedTopics.length > 0) {
+                    html += '<div style="margin-top: 10px; padding: 8px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; font-size: 13px;">';
+                    html += '<strong>📚 Referenced topics:</strong> ' + referencedTopics.join(', ');
+                    html += '</div>';
+                }
+
+                // Add suggested follow-ups
+                if (suggestedFollowups && suggestedFollowups.length > 0) {
+                    html += '<div style="margin-top: 10px; padding: 8px; background: rgba(118, 75, 162, 0.1); border-radius: 4px; font-size: 13px;">';
+                    html += '<strong>💡 Follow-up questions:</strong><br>';
+                    suggestedFollowups.forEach(q => {
+                        html += `<a href="#" onclick="askFollowup('${q.replace(/'/g, "\\'")}'); return false;" style="color: #667eea; display: block; margin-top: 4px;">• ${q}</a>`;
+                    });
+                    html += '</div>';
+                }
+
+                messageDiv.innerHTML = html;
+            }
+
+            chatMessages.appendChild(messageDiv);
+
+            // Scroll to bottom
+            document.getElementById('chat-container').scrollTop = document.getElementById('chat-container').scrollHeight;
+        }
+
+        function askFollowup(question) {
+            document.getElementById('tutor-question').value = question;
+            askTutor();
+        }
+
+        function clearChat() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div style="padding: 10px; background: #e8f0fe; border-radius: 8px; margin-bottom: 10px;">
+                    <strong>🧠 Tutor:</strong> Hi! Upload your study materials first, then ask me anything about the content. I can explain concepts, answer questions, and help you learn!
+                </div>
+            `;
+            conversationHistory = [];
+            document.getElementById('tutor-question').value = '';
+        }
+    </script>
+</body>
+</html>

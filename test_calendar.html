@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Parser Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .busy-block {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .busy-block .title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .busy-block .details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .busy-block .type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .type-class { background: #e3f2fd; color: #1976d2; }
+        .type-work { background: #fff3e0; color: #e65100; }
+        .type-personal { background: #f3e5f5; color: #7b1fa2; }
+        .type-other { background: #e0e0e0; color: #424242; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Calendar Parser Test</h1>
+
+        <!-- Upload Calendar -->
+        <div class="section">
+            <h2>Upload Calendar (.ics file)</h2>
+
+            <div class="form-group">
+                <label>User ID:</label>
+                <input type="text" id="user-id" value="demo_user" />
+            </div>
+
+            <div class="form-group">
+                <label>Calendar File (.ics):</label>
+                <input type="file" id="calendar-file" accept=".ics" />
+            </div>
+
+            <div class="form-group">
+                <label>Exam Date (optional - parse only until exam):</label>
+                <input type="date" id="exam-date" />
+            </div>
+
+            <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Preferred Study Start Time (hour):</label>
+                    <input type="number" id="study-start" value="17" min="0" max="23" placeholder="e.g., 17 for 5pm" />
+                </div>
+                <div class="form-group">
+                    <label>Preferred Study End Time (hour):</label>
+                    <input type="number" id="study-end" value="21" min="0" max="23" placeholder="e.g., 21 for 9pm" />
+                </div>
+            </div>
+
+            <button onclick="uploadCalendar()">📤 Upload & Analyze Calendar</button>
+
+            <div id="upload-response" class="response" style="display: none;"></div>
+        </div>
+
+        <!-- Available Study Slots -->
+        <div class="section" id="study-slots-section" style="display: none;">
+            <h2>📖 Available Study Times</h2>
+            <p style="color: #666; margin-bottom: 15px;">All free time slots when you can study (filtered by your preferred times)</p>
+            <div id="study-slots-list"></div>
+        </div>
+
+        <!-- Free Time Analysis -->
+        <div class="section" id="free-time-section" style="display: none;">
+            <h2>⏰ Free Time Analysis</h2>
+            <div id="free-time-stats" class="stats"></div>
+            <div id="free-time-details"></div>
+        </div>
+
+        <!-- Display Busy Blocks -->
+        <div class="section">
+            <h2>Extracted Busy Blocks</h2>
+            <div id="stats-container" class="stats" style="display: none;"></div>
+            <div id="busy-blocks-list"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function uploadCalendar() {
+            const responseDiv = document.getElementById('upload-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = '⏳ Uploading and analyzing calendar...';
+
+            try {
+                const fileInput = document.getElementById('calendar-file');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    throw new Error('Please select a .ics file');
+                }
+
+                const formData = new FormData();
+                formData.append('user_id', document.getElementById('user-id').value);
+                formData.append('file', file);
+
+                // Add exam date if provided
+                const examDate = document.getElementById('exam-date').value;
+                if (examDate) {
+                    formData.append('exam_date', examDate);
+                }
+
+                // Add preferred study times
+                const studyStart = document.getElementById('study-start').value;
+                const studyEnd = document.getElementById('study-end').value;
+                if (studyStart) formData.append('preferred_study_start', studyStart);
+                if (studyEnd) formData.append('preferred_study_end', studyEnd);
+
+                const response = await fetch(`${API_BASE}/calendar/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    let message = `✅ Calendar parsed successfully!\n\n`;
+                    message += `📅 Days analyzed: ${data.days_parsed}\n`;
+                    message += `📋 Busy blocks: ${data.blocks_extracted}\n`;
+                    if (data.free_time_analysis) {
+                        message += `⏰ Free time available: ${data.free_time_analysis.total_free_hours}h`;
+                    }
+                    responseDiv.textContent = message;
+
+                    // Display the blocks and free time
+                    displayBusyBlocks(data.busy_blocks);
+                    if (data.free_time_analysis) {
+                        displayAvailableStudySlots(data.free_time_analysis);
+                        displayFreeTimeAnalysis(data.free_time_analysis);
+                    }
+                } else {
+                    throw new Error(data.detail || 'Calendar upload failed');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        function displayAvailableStudySlots(analysis) {
+            const section = document.getElementById('study-slots-section');
+            const container = document.getElementById('study-slots-list');
+
+            if (!analysis.available_study_slots || analysis.available_study_slots.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            let html = '';
+
+            // Show preferred hours info if set
+            if (analysis.total_preferred_hours !== null) {
+                html += `<div style="background: #e8f0fe; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                    <strong>✅ ${analysis.total_preferred_hours}h available during your preferred study times</strong>
+                </div>`;
+            }
+
+            // Display all slots in a clean list
+            html += '<div style="display: grid; gap: 10px;">';
+
+            analysis.available_study_slots.forEach((slot, index) => {
+                html += `
+                    <div class="busy-block" style="border-left-color: #4caf50;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${index + 1}. ${slot.day_name}, ${slot.date}</strong>
+                                <div style="color: #666; margin-top: 4px;">
+                                    ⏰ ${slot.start} - ${slot.end}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 20px; font-weight: bold; color: #4caf50;">
+                                    ${slot.duration_hours}h
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function displayBusyBlocks(blocks) {
+            const container = document.getElementById('busy-blocks-list');
+            const statsContainer = document.getElementById('stats-container');
+
+            if (!blocks || blocks.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center;">No busy blocks found</p>';
+                statsContainer.style.display = 'none';
+                return;
+            }
+
+            // Calculate stats
+            const stats = {
+                total: blocks.length,
+                class: blocks.filter(b => b.block_type === 'class').length,
+                work: blocks.filter(b => b.block_type === 'work').length,
+                personal: blocks.filter(b => b.block_type === 'personal').length,
+                other: blocks.filter(b => b.block_type === 'other').length
+            };
+
+            // Display stats
+            statsContainer.style.display = 'grid';
+            statsContainer.innerHTML = `
+                <div class="stat-box">
+                    <div class="number">${stats.total}</div>
+                    <div class="label">Total Blocks</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.class}</div>
+                    <div class="label">Classes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.work}</div>
+                    <div class="label">Work</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.personal}</div>
+                    <div class="label">Personal</div>
+                </div>
+            `;
+
+            // Display blocks
+            let html = '';
+            blocks.forEach(block => {
+                const startDate = new Date(block.start);
+                const endDate = new Date(block.end);
+                const duration = ((endDate - startDate) / (1000 * 60 * 60)).toFixed(1);
+
+                html += `
+                    <div class="busy-block">
+                        <div class="title">${block.title}</div>
+                        <div class="details">
+                            📅 ${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()} - ${endDate.toLocaleTimeString()}
+                            <br>
+                            ⏱️ Duration: ${duration} hours
+                        </div>
+                        <span class="type type-${block.block_type}">${block.block_type.toUpperCase()}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function analyzeFreeTime() {
+            const responseDiv = document.getElementById('upload-response');
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'response';
+            responseDiv.textContent = '⏳ Analyzing free time...';
+
+            try {
+                const userId = document.getElementById('user-id').value;
+                const daysAhead = document.getElementById('days-ahead').value;
+                const response = await fetch(`${API_BASE}/calendar/free-time/${userId}?days_ahead=${daysAhead}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success';
+                    responseDiv.textContent = `✅ Free time analyzed for next ${data.days_analyzed} days`;
+
+                    displayFreeTimeAnalysis(data);
+                } else {
+                    throw new Error('Failed to analyze free time');
+                }
+            } catch (error) {
+                responseDiv.className = 'response error';
+                responseDiv.textContent = '❌ Error: ' + error.message;
+            }
+        }
+
+        function displayFreeTimeAnalysis(analysis) {
+            const section = document.getElementById('free-time-section');
+            const statsContainer = document.getElementById('free-time-stats');
+            const detailsContainer = document.getElementById('free-time-details');
+
+            section.style.display = 'block';
+
+            // Display summary stats
+            statsContainer.innerHTML = `
+                <div class="stat-box">
+                    <div class="number">${analysis.total_free_hours}h</div>
+                    <div class="label">Total Free Time</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${analysis.avg_free_hours_per_day}h</div>
+                    <div class="label">Avg Free Hours/Day</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${analysis.days_analyzed}</div>
+                    <div class="label">Days Analyzed</div>
+                </div>
+            `;
+
+            // Display best and busiest days
+            let html = '<div style="margin-top: 20px;">';
+
+            html += '<h3 style="color: #667eea; margin-bottom: 10px;">📅 Best Days to Study</h3>';
+            analysis.best_study_days.forEach(day => {
+                html += `
+                    <div class="busy-block" style="border-left-color: #4caf50;">
+                        <div class="title">${day.day_name} - ${day.date}</div>
+                        <div class="details">
+                            ✅ ${day.free_hours}h free (${day.free_percentage}% of day)
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '<h3 style="color: #667eea; margin: 20px 0 10px 0;">⚠️ Busiest Days (Limited Free Time)</h3>';
+            analysis.busiest_days.forEach(day => {
+                html += `
+                    <div class="busy-block" style="border-left-color: #f44336;">
+                        <div class="title">${day.day_name} - ${day.date}</div>
+                        <div class="details">
+                            ⏱️ Only ${day.free_hours}h free - ${day.busy_blocks} events scheduled
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '<h3 style="color: #667eea; margin: 20px 0 10px 0;">📊 Daily Breakdown</h3>';
+            analysis.days.forEach(day => {
+                const color = day.free_hours > 8 ? '#4caf50' : day.free_hours > 4 ? '#ff9800' : '#f44336';
+                html += `
+                    <div class="busy-block" style="border-left-color: ${color};">
+                        <div class="title">${day.day_name} - ${day.date}</div>
+                        <div class="details">
+                            📊 Free: ${day.free_hours}h | Busy: ${day.busy_hours}h | ${day.free_percentage}% available
+                        </div>
+                `;
+
+                if (day.free_slots && day.free_slots.length > 0) {
+                    html += '<div style="margin-top: 8px; font-size: 13px; color: #666;">';
+                    html += '<strong>Free time slots:</strong><br>';
+                    day.free_slots.forEach(slot => {
+                        html += `&nbsp;&nbsp;• ${slot.start} - ${slot.end} (${slot.duration_hours}h)<br>`;
+                    });
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            });
+
+            html += '</div>';
+            detailsContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

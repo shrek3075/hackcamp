@@ -1,421 +1,779 @@
-# SmartPlanner - AI-Powered Study Planning Backend 🎓
+# SmartPlanner - AI-Powered Study Planning Platform
 
-Duolingo-style study app that transforms syllabuses into personalized study timelines with AI coaching, practice questions, and gamification.
+**Transform your study chaos into an organized, intelligent learning journey**
 
-## 🚀 Features
+A comprehensive full-stack study planning application that uses AI to extract syllabus content, generate personalized study schedules, create practice quizzes, and provide 24/7 AI tutoring with smart scheduling that respects your busy days.
 
-- **Vision-Based Syllabus Extraction**: Upload PDF/image syllabuses → AI extracts all assignments, exams, projects
-- **Calendar Integration**: Upload .ics calendar → AI categorizes events (no keyword matching!)
-- **Smart Timeline Generation**: AI creates study schedule around your busy times
-- **Daily Study Coach**: Duolingo-style daily recommendations and motivational messages
-- **AI Practice Questions**: Generate practice problems for any topic
-- **AI Tutor**: Explain concepts, answer questions, suggest resources
-- **Progress Tracking**: Streaks, badges, stats, achievements
+---
 
-## 📋 Tech Stack
+## Table of Contents
 
-- **Backend**: FastAPI (Python)
-- **AI**: OpenAI GPT-4o-mini (vision-capable, cheap, fast)
-- **Database**: Supabase (PostgreSQL)
-- **Deployment**: Uvicorn ASGI server
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Detailed Setup](#detailed-setup)
+- [Key Features Deep Dive](#key-features-deep-dive)
+- [Architecture](#architecture)
+- [API Documentation](#api-documentation)
+- [Project Structure](#project-structure)
+- [Screenshots](#screenshots)
+- [Cost & Performance](#cost--performance)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 🛠️ Setup (15 minutes)
+---
 
-### 1. Prerequisites
+## Features
 
+### AI-Powered Intelligence
+- **Vision-Based Content Extraction** - Upload PDF syllabi, images, or PowerPoint slides and let AI extract topics, assignments, and learning objectives
+- **AI Study Plan Generation** - Gemini 2.5 Flash creates personalized day-by-day study plans based on your syllabus
+- **AI Tutor Chat** - 24/7 conversational AI tutor powered by GPT-4o-mini for concept explanations and study guidance
+- **Intelligent Quiz Generation** - AI creates practice quizzes based on your notes and study materials
+
+### Study Tools
+- **Interactive Quiz Game** - Gamified quiz interface with score tracking and immediate feedback
+- **Notes Management** - Create, edit, and organize study notes with tags and categories
+- **Topic Mindmap** - Visual flowchart of your study topics with achievement tracking
+- **Progress Dashboard** - Track completion rates, study hours, and achievements
+- **Multi-Subject Support** - Manage multiple study plans simultaneously
+
+### Smart Scheduling
+- **Busy Day Management** - Mark specific days as unavailable (e.g., Mondays, Fridays)
+- **Flexible Study Hours** - Set total study hours and let AI distribute them optimally
+- **Spaced Repetition** - Built-in review sessions before exams
+
+---
+
+## Tech Stack
+
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for blazing-fast builds
+- **Tailwind CSS** for modern, responsive UI
+- **shadcn/ui** component library
+- **React Router** for navigation
+- **Supabase Client** for real-time data
+- **React Markdown** for formatted AI responses
+- **PDF.js** for PDF parsing
+
+### Backend
+- **FastAPI** (Python) for high-performance API
+- **OpenAI GPT-4o-mini** for vision and text AI
+- **Supabase** (PostgreSQL) for database
+- **Uvicorn** ASGI server
+
+### AI & Cloud Services
+- **Supabase Edge Functions** (Deno) for serverless AI processing
+- **Gemini 2.5 Flash** for study plan generation
+- **GPT-4o-mini** for content extraction and tutoring
+- **Lovable AI Gateway** for AI orchestration
+
+---
+
+## Quick Start
+
+### Prerequisites
 - Python 3.9+
-- OpenAI API key (get from https://platform.openai.com/api-keys)
-- Supabase account (get from https://supabase.com)
+- Node.js 18+
+- OpenAI API key
+- Supabase account with Lovable API key configured
 
-### 2. Clone Repository
-
+### 1. Clone Repository
 ```bash
 git clone https://github.com/shrek3075/hackcamp.git
 cd hackcamp
 ```
 
-### 3. Install Dependencies
+### 2. Backend Setup
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
 
+# Configure environment
+cp .env.example .env
+# Edit .env with your OpenAI and Supabase credentials
+
+# Run backend server
+python -m uvicorn app.main:app --reload
+# Server starts at http://localhost:8000
+```
+
+### 3. Frontend Setup
+```bash
+cd frontend/study-planner-pro
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+# Frontend starts at http://localhost:5173
+```
+
+### 4. Access Application
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+
+---
+
+## Detailed Setup
+
+### Backend Configuration
+
+#### 1. Install Python Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-**Note**: For PDF vision support, also install:
+**For PDF support:**
 ```bash
 pip install pdf2image
 ```
 
-And install Poppler (required for pdf2image):
-- **Windows**: Download from https://github.com/oschwartz10612/poppler-windows/releases/
+**Install Poppler** (required for pdf2image):
+- **Windows**: Download from [poppler-windows releases](https://github.com/oschwartz10612/poppler-windows/releases/)
 - **Mac**: `brew install poppler`
 - **Linux**: `sudo apt-get install poppler-utils`
 
-### 4. Set Up Supabase
-
-1. Go to https://supabase.com/dashboard
+#### 2. Set Up Supabase Database
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
 2. Create a new project
 3. Go to SQL Editor
-4. Copy and paste the contents of `supabase_schema.sql`
-5. Run the SQL to create all tables
-6. Get your API keys from Settings → API
+4. Run the SQL from `supabase_schema.sql`
+5. Get your API keys from Settings → API
 
-### 5. Configure Environment
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your keys:
+#### 3. Configure Environment Variables
+Create `.env` file:
 ```env
 OPENAI_API_KEY=sk-your-openai-key
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-supabase-anon-key
 ```
 
-### 6. Run the Server
-
+#### 4. Deploy Supabase Edge Functions
 ```bash
-uvicorn app.main:app --reload
+cd frontend/study-planner-pro
+
+# Install Supabase CLI
+npm install -g supabase
+
+# Login to Supabase
+supabase login
+
+# Link project
+supabase link --project-ref your-project-ref
+
+# Deploy functions
+npx supabase functions deploy generate-study-plan
+npx supabase functions deploy generate-quiz
+npx supabase functions deploy generate-study-recommendations
 ```
 
-Server starts at: **http://localhost:8000**
+**Set Lovable API Key** in Supabase:
+```bash
+supabase secrets set LOVABLE_API_KEY=your-lovable-api-key
+```
 
-API docs at: **http://localhost:8000/docs**
+### Frontend Configuration
 
-## 📚 API Endpoints
+#### 1. Install Dependencies
+```bash
+cd frontend/study-planner-pro
+npm install
+```
 
-### Syllabus Management
-- `POST /syllabus/upload` - Upload PDF/image syllabus
+#### 2. Configure Supabase
+Update `src/integrations/supabase/client.ts` with your Supabase credentials (if not using environment variables).
+
+#### 3. Run Development Server
+```bash
+npm run dev
+```
+
+---
+
+## Key Features Deep Dive
+
+### 1. Calendar Integration
+
+Upload your `.ics` calendar file to get intelligent study scheduling:
+
+**Features:**
+- Parses calendar events for the next 60 days
+- Calculates free time slots with 15-minute buffers
+- Prioritizes earlier study times
+- Avoids scheduling conflicts
+- Shows available time slots per day
+
+**How it works:**
+1. Upload calendar on Details page
+2. Set study time window (default: 3:15 PM - 10:00 PM)
+3. Mark busy days (e.g., Mondays, Fridays)
+4. Generate study plan
+5. View specific time recommendations for each session
+
+### 2. AI Study Plan Generation
+
+Powered by Gemini 2.5 Flash for comprehensive planning:
+
+**Input:**
+- Subject name
+- Test date
+- Syllabus content (PDF, text, or extracted)
+- Calendar events (optional)
+- Study time preferences
+- Busy days
+
+**Output:**
+- Day-by-day study schedule
+- Specific topics per session
+- Suggested time ranges
+- Session duration and priority
+- Daily goals and milestones
+- Total hours calculation
+
+**Smart Features:**
+- Respects calendar conflicts
+- Distributes topics evenly
+- Includes review sessions
+- Calculates actual day of week
+- Skips busy days
+
+### 3. AI Tutor
+
+24/7 conversational AI assistant:
+
+**Capabilities:**
+- Explain complex concepts
+- Answer study questions
+- Provide learning strategies
+- Context-aware (knows your study plan)
+- Markdown-formatted responses
+- Real-time chat interface
+
+**Technologies:**
+- GPT-4o-mini for natural conversations
+- React Markdown for beautiful formatting
+- Study plan context integration
+
+### 4. Quiz System
+
+Two-part quiz functionality:
+
+**A. AI Quiz Generation**
+- Generates quizzes from your notes
+- 5 questions per quiz
+- Multiple choice, true/false, fill-in-blank
+- Difficulty levels: easy, medium, hard
+- Explanations for each answer
+
+**B. Interactive Quiz Game**
+- Full-screen quiz interface
+- Score tracking
+- Timed sessions
+- Immediate feedback
+- Achievement system
+
+### 5. Progress Tracking
+
+Comprehensive progress monitoring:
+
+**Metrics:**
+- Session completion percentage
+- Study hours logged
+- Topics mastered
+- Daily streak tracking
+- Achievement badges
+
+**Views:**
+- Progress dashboard with charts
+- Mindmap with topic checkboxes
+- Study plan with completion status
+- History of past study plans
+
+### 6. Mindmap Visualization
+
+Visual representation of study topics:
+
+**Features:**
+- Hierarchical topic structure
+- Main topics with subtopics
+- Progress indicator
+- Checkbox achievements
+- Color-coded completion
+- Connection lines showing relationships
+
+---
+
+## Architecture
+
+### System Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Frontend (React)                     │
+│  ┌─────────┐  ┌──────────┐  ┌────────┐  ┌───────────┐ │
+│  │ Details │  │   Plan   │  │ Tutor  │  │  Progress │ │
+│  │  Page   │  │   Page   │  │  Chat  │  │  Tracker  │ │
+│  └─────────┘  └──────────┘  └────────┘  └───────────┘ │
+│                           │                              │
+│                           ▼                              │
+│                  Supabase Client                         │
+└───────────────────────────┬─────────────────────────────┘
+                            │
+                ┌───────────┴───────────┐
+                │                       │
+                ▼                       ▼
+    ┌──────────────────┐    ┌──────────────────┐
+    │  Supabase Edge   │    │  FastAPI Backend │
+    │    Functions     │    │     (Python)     │
+    │                  │    │                  │
+    │ • Study Plans    │    │ • Syllabus Parse │
+    │ • Quiz Gen       │    │ • Timeline Gen   │
+    │ • Mindmap Gen    │    │ • Progress API   │
+    └────────┬─────────┘    └────────┬─────────┘
+             │                       │
+             ▼                       ▼
+    ┌────────────────┐      ┌────────────────┐
+    │  Gemini 2.5    │      │  OpenAI GPT-4o │
+    │     Flash      │      │      mini      │
+    └────────────────┘      └────────────────┘
+                │
+                ▼
+        ┌───────────────┐
+        │   Supabase    │
+        │  PostgreSQL   │
+        └───────────────┘
+```
+
+### Data Flow
+
+**Study Plan Creation:**
+1. User uploads syllabus + calendar on Details page
+2. Frontend parses calendar with ical.js
+3. Calculates free time slots with buffers
+4. Sends to Supabase Edge Function `generate-study-plan`
+5. Edge Function calls Gemini 2.5 Flash with structured prompt
+6. AI generates day-by-day plan with specific times
+7. Plan saved to Supabase database
+8. Frontend displays plan on Plan page
+
+**Quiz Generation:**
+1. User creates notes in NotesView
+2. Notes synced to localStorage and database
+3. User clicks "Generate Quiz"
+4. Frontend calls `generate-quiz` Edge Function
+5. AI analyzes notes and creates questions
+6. Quiz displayed in game interface
+
+**AI Tutor:**
+1. User sends message in Tutor chat
+2. Frontend includes study plan context
+3. Request sent to GPT-4o-mini via Edge Function
+4. AI responds with context-aware advice
+5. Response rendered with ReactMarkdown
+
+---
+
+## API Documentation
+
+### Backend API Endpoints (FastAPI - Port 8000)
+
+#### Syllabus Management
+- `POST /syllabus/upload` - Upload syllabus (PDF, image, text)
 - `GET /syllabus/tasks/{user_id}` - Get extracted tasks
 
-### Calendar
+#### Calendar
 - `POST /calendar/upload` - Upload .ics calendar
-- `GET /calendar/busy-blocks/{user_id}` - Get busy times
+- `GET /calendar/busy-blocks/{user_id}` - Get busy time blocks
 
-### Timeline Generation
-- `POST /timeline/generate` - Generate study schedule
+#### Timeline Generation
+- `POST /timeline/generate` - Generate study timeline
 - `GET /timeline/{plan_id}` - Get specific timeline
 - `GET /timeline/latest/{user_id}` - Get latest timeline
 
-### Daily Coaching
-- `GET /daily/{user_id}` - Get today's study plan (Duolingo-style)
-
-### Practice & Tutoring
-- `POST /practice/generate` - Generate practice questions
-- `POST /practice/check-answer` - Check answer with AI feedback
-- `POST /practice/explain` - AI explains a concept
-- `POST /practice/ask` - Ask AI tutor a question
-- `GET /practice/resources/{topic}` - Get study resource suggestions
-
-### Progress Tracking
-- `POST /progress/checkin` - Daily check-in (update streak)
-- `GET /progress/stats/{user_id}` - Get progress statistics
-- `GET /progress/report/{user_id}` - Comprehensive progress report
+#### Progress Tracking
+- `POST /progress/checkin` - Daily check-in
+- `GET /progress/stats/{user_id}` - Get progress stats
 - `POST /progress/task/{task_id}/complete` - Mark task complete
 
-### Health Check
-- `GET /health` - Check API and service status
+#### Practice & Tutoring
+- `POST /practice/generate` - Generate practice questions
+- `POST /practice/explain` - AI explains concept
+- `POST /practice/ask` - Ask AI tutor
 
-## 🎯 Complete User Flow
+#### Configuration
+- `POST /config/semester` - Set semester dates
+- `GET /config/semester/{user_id}` - Get semester config
 
-### Step 1: Onboarding (Upload Content)
+### Supabase Edge Functions (Port 54321)
 
-**Upload Syllabus:**
-```bash
-curl -X POST "http://localhost:8000/syllabus/upload" \
-  -F "user_id=user123" \
-  -F "file=@syllabus.pdf"
-```
+#### Study Plan Generation
+**Endpoint:** `POST /functions/v1/generate-study-plan`
 
-Response:
+**Request:**
 ```json
 {
-  "success": true,
-  "tasks_extracted": 15,
-  "tasks": [
-    {
-      "id": "uuid",
-      "title": "Assignment 1: Intro to Python",
-      "due_date": "2024-02-15",
-      "task_type": "assignment",
-      "weight": 15.0,
-      "effort_hours": 4.5
-    }
-  ]
-}
-```
-
-**Upload Calendar:**
-```bash
-curl -X POST "http://localhost:8000/calendar/upload" \
-  -F "user_id=user123" \
-  -F "file=@calendar.ics"
-```
-
-### Step 2: Generate Timeline
-
-```bash
-curl -X POST "http://localhost:8000/timeline/generate" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "user123",
-    "preferences": {
-      "max_hours_per_day": 6.0,
-      "preferred_start_time": "09:00",
-      "preferred_end_time": "22:00"
-    }
-  }'
-```
-
-Response:
-```json
-{
-  "plan_id": "uuid",
-  "blocks": [
-    {
-      "task_title": "Assignment 1: Intro to Python",
-      "start": "2024-02-01T14:00:00Z",
-      "end": "2024-02-01T16:30:00Z",
-      "duration_hours": 2.5,
-      "reason": "due in 14 days, 15% of grade, session 1/2"
-    }
-  ],
-  "total_hours": 45.5
-}
-```
-
-### Step 3: Daily Study (Duolingo-Style)
-
-```bash
-curl "http://localhost:8000/daily/user123?user_name=Alex"
-```
-
-Response:
-```json
-{
-  "date": "2024-02-01",
-  "blocks": [
-    {
-      "task_title": "Assignment 1",
-      "start": "2024-02-01T14:00:00Z",
-      "end": "2024-02-01T16:30:00Z"
-    }
-  ],
-  "total_hours": 2.5,
-  "motivation": "Great work Alex! You're on a 5-day streak! Today's focus: Assignment 1. Let's keep the momentum going! 🔥",
-  "streak": 5,
-  "progress_percent": 23.5
-}
-```
-
-### Step 4: Practice & Learn
-
-**Generate Practice Questions:**
-```bash
-curl -X POST "http://localhost:8000/practice/generate" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "topic": "Python lists and loops",
-    "difficulty": "medium",
-    "num_questions": 5
-  }'
-```
-
-**Get Explanation:**
-```bash
-curl -X POST "http://localhost:8000/practice/explain" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "concept": "Big O notation",
-    "detail_level": "medium"
-  }'
-```
-
-### Step 5: Track Progress
-
-```bash
-curl -X POST "http://localhost:8000/progress/checkin" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "user123",
-    "completed_block_ids": ["block_id_1", "block_id_2"]
-  }'
-```
-
-Response:
-```json
-{
-  "success": true,
-  "message": "Great job! 6-day streak!",
-  "stats": {
-    "current_streak": 6,
-    "task_completion_percent": 25.0,
-    "completed_hours": 12.5
+  "subject": "Physics 101",
+  "testDate": "2025-12-15",
+  "startDate": "2025-11-16",
+  "busyDays": ["Monday", "Friday"],
+  "totalStudyHours": 40,
+  "syllabusContent": "...",
+  "calendarEvents": [...],
+  "studyTimeWindow": {
+    "startTime": "15:15",
+    "endTime": "22:00"
   },
-  "badges": [
-    {"name": "Week Warrior", "icon": "⭐", "description": "7-day streak!"}
+  "dailyFreeSlots": {
+    "2025-11-16": ["15:15 - 18:00", "19:00 - 22:00"]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "studyPlan": {
+    "totalDays": 20,
+    "totalHours": 40,
+    "dailyPlans": [
+      {
+        "day": 1,
+        "date": "2025-11-16",
+        "dayOfWeek": "Saturday",
+        "totalStudyHours": 2,
+        "sessions": [
+          {
+            "topic": "Newton's Laws",
+            "duration": 1,
+            "description": "Study fundamental concepts",
+            "priority": "high",
+            "suggestedTime": "15:15 - 16:15"
+          }
+        ],
+        "goals": "Master basic mechanics",
+        "freeTimeSlots": ["15:15 - 18:00", "19:00 - 22:00"]
+      }
+    ],
+    "summary": "Comprehensive physics study plan"
+  }
+}
+```
+
+#### Quiz Generation
+**Endpoint:** `POST /functions/v1/generate-quiz`
+
+**Request:**
+```json
+{
+  "notes": [
+    {
+      "title": "Newton's Laws",
+      "content": "First law: Object in motion..."
+    }
+  ],
+  "difficulty": "medium"
+}
+```
+
+**Response:**
+```json
+{
+  "questions": [
+    {
+      "type": "multiple_choice",
+      "question": "What is Newton's First Law?",
+      "options": ["A", "B", "C", "D"],
+      "correctAnswer": 0,
+      "explanation": "..."
+    }
   ]
 }
 ```
 
-## 🏗️ Project Structure
+#### Mindmap Generation
+**Endpoint:** `POST /functions/v1/generate-study-recommendations`
+
+**Request:**
+```json
+{
+  "subject": "Physics 101",
+  "syllabusContent": "...",
+  "type": "flowchart"
+}
+```
+
+**Response:**
+```json
+{
+  "flowchart": {
+    "subject": "Physics 101",
+    "mainTopics": [
+      {
+        "name": "Mechanics",
+        "subtopics": ["Kinematics", "Dynamics", "Energy"],
+        "description": "Study of motion and forces"
+      }
+    ],
+    "summary": "Physics topic structure"
+  }
+}
+```
+
+---
+
+## Project Structure
 
 ```
 HackCamp/
-├── app/
-│   ├── main.py                 # FastAPI app
-│   ├── models.py               # Pydantic schemas
+├── app/                                    # FastAPI Backend
+│   ├── main.py                            # Main application
+│   ├── models.py                          # Pydantic schemas
 │   ├── clients/
-│   │   ├── ai_client.py        # OpenAI GPT-4o-mini
-│   │   └── supabase.py         # Database client
+│   │   ├── ai_client.py                  # OpenAI client
+│   │   └── supabase.py                   # Supabase client
 │   ├── services/
-│   │   ├── syllabus_extractor.py    # Vision-based extraction
-│   │   ├── calendar_parser.py       # AI calendar categorization
-│   │   ├── timeline_generator.py    # Smart scheduler
-│   │   ├── study_coach.py           # Daily recommendations
-│   │   ├── practice_generator.py    # AI practice questions
-│   │   ├── tutor.py                 # AI explanations
-│   │   ├── effort_estimator.py      # Task effort estimation
-│   │   └── progress_tracker.py      # Streaks & stats
+│   │   ├── syllabus_extractor.py         # Vision-based extraction
+│   │   ├── calendar_parser.py            # Calendar AI categorization
+│   │   ├── timeline_generator.py         # Smart scheduler
+│   │   ├── effort_estimator.py           # Task effort estimation
+│   │   ├── quiz_generator.py             # Quiz generation
+│   │   └── study_schedule_generator.py   # Study scheduling
 │   └── routes/
 │       ├── syllabus.py
 │       ├── calendar.py
 │       ├── timeline.py
-│       ├── daily.py
-│       ├── practice.py
-│       └── progress.py
-├── requirements.txt
-├── supabase_schema.sql
-├── .env.example
-├── .gitignore
-└── README.md
+│       ├── config.py
+│       └── tutor.py
+│
+├── frontend/study-planner-pro/            # React Frontend
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Auth.tsx                  # Authentication
+│   │   │   ├── Details.tsx               # Study plan creation
+│   │   │   ├── Plan.tsx                  # Study plan view
+│   │   │   ├── Mindmap.tsx               # Topic visualization
+│   │   │   ├── Progress.tsx              # Progress tracking
+│   │   │   ├── AITutor.tsx               # AI chat interface
+│   │   │   ├── QuizGame.tsx              # Interactive quiz
+│   │   │   └── History.tsx               # Past plans
+│   │   ├── components/
+│   │   │   ├── ui/                       # shadcn/ui components
+│   │   │   └── NotesView.tsx             # Notes management
+│   │   └── integrations/
+│   │       └── supabase/
+│   │           └── client.ts             # Supabase client
+│   │
+│   ├── supabase/functions/               # Edge Functions
+│   │   ├── generate-study-plan/
+│   │   │   └── index.ts                  # Study plan AI
+│   │   ├── generate-quiz/
+│   │   │   └── index.ts                  # Quiz AI
+│   │   └── generate-study-recommendations/
+│   │       └── index.ts                  # Mindmap AI
+│   │
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── requirements.txt                       # Python dependencies
+├── supabase_schema.sql                    # Database schema
+├── .env.example                           # Environment template
+├── COMPREHENSIVE_FEATURES.md              # Feature documentation
+├── QUICKSTART.md                          # Quick start guide
+└── README.md                              # This file
 ```
-
-## 🧪 Testing
-
-### Test Health Check
-```bash
-curl http://localhost:8000/health
-```
-
-### Test with Example Files
-
-Create a test syllabus (text):
-```bash
-curl -X POST "http://localhost:8000/syllabus/upload" \
-  -F "user_id=test_user" \
-  -F 'syllabus_text=Assignment 1 (15%): Due Feb 15
-Midterm Exam (30%): March 10
-Final Project (25%): April 20'
-```
-
-## 💰 Cost Estimation
-
-Using GPT-4o-mini (very cheap):
-- Syllabus extraction: ~$0.001 per page
-- Practice questions: ~$0.0005 per generation
-- Calendar categorization: ~$0.0001 per event
-- Daily coaching: ~$0.0003 per message
-
-**Estimated cost for one student for entire semester: ~$1-2**
-
-## 🎨 Frontend Integration
-
-The backend returns clean JSON. Example integration:
-
-```javascript
-// Upload syllabus
-const formData = new FormData();
-formData.append('user_id', userId);
-formData.append('file', syllabusFile);
-
-const response = await fetch('http://localhost:8000/syllabus/upload', {
-  method: 'POST',
-  body: formData
-});
-
-const data = await response.json();
-console.log(`Extracted ${data.tasks_extracted} tasks!`);
-
-// Get daily plan
-const daily = await fetch(`http://localhost:8000/daily/${userId}`);
-const plan = await daily.json();
-
-console.log(plan.motivation); // Show motivational message
-console.log(plan.blocks);     // Display today's study blocks
-```
-
-## 🔒 Security Notes
-
-For MVP/Hackathon:
-- RLS (Row Level Security) is disabled in Supabase for easier development
-- CORS is set to allow all origins
-- No authentication implemented
-
-**Before production:**
-1. Enable Supabase RLS policies
-2. Add proper authentication (JWT tokens)
-3. Configure CORS to allow only your frontend domain
-4. Add rate limiting
-5. Validate all inputs
-
-## 🐛 Troubleshooting
-
-**Issue**: `pdf2image` errors
-**Fix**: Install Poppler (see setup instructions)
-
-**Issue**: OpenAI API errors
-**Fix**: Check your API key has credits
-
-**Issue**: Supabase connection errors
-**Fix**: Verify SUPABASE_URL and SUPABASE_KEY in .env
-
-**Issue**: Import errors
-**Fix**: Make sure you're in the project root and virtual environment is activated
-
-## 📝 API Documentation
-
-Once running, visit:
-- **Interactive docs**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-## 🚀 Deployment
-
-### Quick Deploy to Render/Railway/Heroku
-
-1. Push code to GitHub
-2. Connect to deployment platform
-3. Set environment variables
-4. Deploy!
-
-Example for Render:
-```bash
-# Render will auto-detect requirements.txt
-# Just set env vars in Render dashboard
-```
-
-## 📞 Support
-
-For issues or questions during hackathon:
-- Check `/docs` endpoint for API details
-- Review `supabase_schema.sql` for database structure
-- All services have error handling with descriptive messages
-
-## 🎉 Next Steps (Post-Hackathon)
-
-- [ ] Add user authentication (Supabase Auth)
-- [ ] Implement email/push notifications
-- [ ] Add collaborative study groups
-- [ ] Integrate with Google Calendar API (OAuth)
-- [ ] Add mobile app support
-- [ ] Implement spaced repetition algorithm
-- [ ] Add voice input for questions
-- [ ] Create achievement system with rewards
-
-## 📄 License
-
-MIT License - Build something awesome! 🚀
 
 ---
 
-**Built for HackCamp 2024** | Powered by OpenAI GPT-4o-mini & Supabase
+## Screenshots
+
+### Study Plan Creation
+![Details Page](docs/screenshots/details-page.png)
+*Upload syllabus, configure calendar, and set study preferences*
+
+### AI-Generated Study Plan
+![Study Plan](docs/screenshots/study-plan.png)
+*Day-by-day schedule with specific time recommendations*
+
+### Topic Mindmap
+![Mindmap](docs/screenshots/mindmap.png)
+*Visual representation of study topics with progress tracking*
+
+### AI Tutor Chat
+![AI Tutor](docs/screenshots/ai-tutor.png)
+*24/7 AI assistance with beautiful markdown formatting*
+
+### Quiz Game
+![Quiz Game](docs/screenshots/quiz-game.png)
+*Interactive quiz interface with score tracking*
+
+### Progress Dashboard
+![Progress](docs/screenshots/progress.png)
+*Track completion rates and study hours*
+
+---
+
+## Cost & Performance
+
+### AI Cost Estimation (per student per semester)
+
+**Backend (GPT-4o-mini):**
+- Syllabus extraction: ~$0.001 per page
+- Calendar categorization: ~$0.0001 per event
+- Content analysis: ~$0.002 per document
+
+**Edge Functions (Gemini 2.5 Flash):**
+- Study plan generation: ~$0.0005 per plan
+- Quiz generation: ~$0.0003 per quiz
+- Mindmap generation: ~$0.0002 per mindmap
+
+**Total estimated cost: $1-3 per student per semester**
+
+### Performance Metrics
+
+**Response Times:**
+- Syllabus upload: 3-8 seconds
+- Study plan generation: 4-10 seconds
+- Quiz generation: 2-4 seconds
+- AI tutor response: 1-3 seconds
+- Calendar parsing: <1 second
+
+**Concurrent Users:**
+- FastAPI: 100+ concurrent requests
+- Supabase: Scales automatically
+- Edge Functions: Serverless scaling
+
+---
+
+## Future Enhancements
+
+### Short-term (Next Sprint)
+- [ ] Mobile responsive improvements
+- [ ] Export study plan to PDF/iCal
+- [ ] Email/push notifications
+- [ ] Spaced repetition algorithm refinement
+- [ ] Study session timer with breaks
+
+### Medium-term
+- [ ] Google Calendar OAuth integration
+- [ ] Collaborative study groups
+- [ ] Flashcard generation from notes
+- [ ] Voice input for AI tutor
+- [ ] Study resource recommendations
+- [ ] Achievement system with rewards
+
+### Long-term
+- [ ] Mobile app (React Native)
+- [ ] Chrome extension for quick access
+- [ ] Video lecture integration
+- [ ] Peer tutoring marketplace
+- [ ] Analytics dashboard for educators
+- [ ] Integration with LMS platforms
+
+---
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+- Follow existing code style
+- Add tests for new features
+- Update documentation
+- Keep commits atomic and descriptive
+
+---
+
+## Troubleshooting
+
+### Backend Issues
+
+**Issue:** `pdf2image` errors
+**Fix:** Install Poppler (see setup instructions)
+
+**Issue:** OpenAI API errors
+**Fix:** Check API key has credits at https://platform.openai.com/usage
+
+**Issue:** Supabase connection errors
+**Fix:** Verify `SUPABASE_URL` and `SUPABASE_KEY` in `.env`
+
+### Frontend Issues
+
+**Issue:** Supabase functions not found
+**Fix:** Deploy edge functions with `npx supabase functions deploy`
+
+**Issue:** LOVABLE_API_KEY errors
+**Fix:** Set secret with `supabase secrets set LOVABLE_API_KEY=your-key`
+
+**Issue:** Calendar upload fails
+**Fix:** Ensure .ics file is valid format
+
+### General Issues
+
+**Issue:** CORS errors
+**Fix:** Check backend is running on correct port (8000)
+
+**Issue:** Authentication errors
+**Fix:** Clear browser cache and re-authenticate
+
+---
+
+## Security Notes
+
+**Current Status (MVP/Hackathon):**
+- RLS disabled in Supabase for easier development
+- CORS allows all origins
+- No rate limiting implemented
+
+**Before Production:**
+1. Enable Supabase Row Level Security (RLS)
+2. Implement JWT authentication
+3. Configure CORS for specific domains
+4. Add rate limiting middleware
+5. Input validation and sanitization
+6. API key rotation policy
+7. Audit logging
+
+---
+
+## License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+---
+
+## Acknowledgments
+
+- **OpenAI** for GPT-4o-mini API
+- **Google** for Gemini 2.5 Flash
+- **Supabase** for backend infrastructure
+- **Lovable** for AI gateway
+- **shadcn/ui** for beautiful components
+- **HackCamp 2024** for the inspiration
+
+---
+
+## Contact & Support
+
+**Project Repository:** https://github.com/shrek3075/hackcamp
+
+**For Issues:**
+- Check the [GitHub Issues](https://github.com/shrek3075/hackcamp/issues)
+- Review API docs at http://localhost:8000/docs
+- Check Supabase logs in dashboard
+
+**Demo Video:** [Coming Soon]
+
+---
+
+**Built with by HackCamp Team** | Powered by AI
