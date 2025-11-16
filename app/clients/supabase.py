@@ -164,6 +164,45 @@ class SupabaseClient:
         except Exception as e:
             raise Exception(f"Error fetching preferences: {str(e)}")
 
+    # ===== SEMESTER CONFIGURATION =====
+
+    def insert_semester_config(self, config: Dict[str, Any]) -> Dict:
+        """Insert semester configuration"""
+        try:
+            result = self.client.table("semester_configs").insert(config).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            raise Exception(f"Error inserting semester config: {str(e)}")
+
+    def get_semester_config(self, user_id: str) -> Optional[Dict]:
+        """Get semester configuration for a user"""
+        try:
+            result = self.client.table("semester_configs").select("*").eq("user_id", user_id).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            raise Exception(f"Error fetching semester config: {str(e)}")
+
+    def update_semester_config(self, user_id: str, updates: Dict[str, Any]) -> Optional[Dict]:
+        """Update semester configuration"""
+        try:
+            result = (
+                self.client.table("semester_configs")
+                .update(updates)
+                .eq("user_id", user_id)
+                .execute()
+            )
+            return result.data[0] if result.data else None
+        except Exception as e:
+            raise Exception(f"Error updating semester config: {str(e)}")
+
+    def delete_semester_config(self, user_id: str) -> bool:
+        """Delete semester configuration"""
+        try:
+            self.client.table("semester_configs").delete().eq("user_id", user_id).execute()
+            return True
+        except Exception as e:
+            raise Exception(f"Error deleting semester config: {str(e)}")
+
 
 # Global instance
 _supabase_client: Optional[SupabaseClient] = None
