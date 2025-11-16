@@ -9,11 +9,9 @@ venv/
 ENV/
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -22,6 +20,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+# Only ignore Python lib, not frontend/*/src/lib
+/lib/
 
 # Environment variables
 .env
@@ -53,7 +53,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
-dist/
+frontend/**/dist/
 .cache/
 .parcel-cache/
 .vite/

@@ -104,18 +104,24 @@ python -m uvicorn app.main:app --reload
 ```bash
 cd frontend/study-planner-pro
 
+# Configure Supabase credentials
+cp .env.example .env
+# Edit .env and add your Supabase URL and API key from https://supabase.com/dashboard
+
 # Install dependencies
 npm install
 
 # Run development server
 npm run dev
-# Frontend starts at http://localhost:5173
+# Frontend starts at http://localhost:8080
 ```
 
 ### 4. Access Application
-- **Frontend**: http://localhost:5173
+- **Frontend**: http://localhost:8080
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+
+**Note**: The frontend requires Supabase credentials to work. If you see a blank screen, check the browser console and ensure you've configured the `.env` file in `frontend/study-planner-pro/` with your Supabase credentials.
 
 ---
 
